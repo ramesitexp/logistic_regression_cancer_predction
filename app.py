@@ -1,57 +1,74 @@
-from flask import Flask, render_template, request
-from sklearn.datasets import load_breast_cancer
-from sklearn.linear_model import LogisticRegression
-from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import StandardScaler
+import pickle
+from pathlib import Path
 
+import numpy as np
+import streamlit as st
+from sklearn.datasets import load_breast_cancer
+
+MODEL_PATH = Path(__file__).parent / "model.pkl"
+FEATURE_LABELS = [
+    "Mean Radius",
+    "Mean Texture",
+    "Mean Perimeter",
+    "Mean Area",
+    "Mean Smoothness",
+    "Mean Concavity",
+]
 FEATURE_NAMES = [
-    "radius_mean",
-    "texture_mean",
-    "perimeter_mean",
-    "area_mean",
-    "smoothness_mean",
-    "concavity_mean",
+    "mean radius",
+    "mean texture",
+    "mean perimeter",
+    "mean area",
+    "mean smoothness",
+    "mean concavity",
 ]
 
-app = Flask(__name__)
+@st.cache_resource
+def load_model():
+    with open(MODEL_PATH, "rb") as file:
+        return pickle.load(file)
 
-# Train a simple logistic regression model on the breast cancer dataset
-cancer = load_breast_cancer()
-X = cancer.data[:, [list(cancer.feature_names).index(name) for name in FEATURE_NAMES]]
-y = cancer.target
-model = make_pipeline(StandardScaler(), LogisticRegression(max_iter=10000, solver="liblinear"))
-model.fit(X, y)
+@st.cache_data
+def get_defaults():
+    cancer = load_breast_cancer()
+    X = cancer.data[:, [list(cancer.feature_names).index(name) for name in FEATURE_NAMES]]
+    return {label: float(np.round(X[:, idx].mean(), 4)) for idx, label in enumerate(FEATURE_LABELS)}
 
-feature_defaults = {
-    name: float(X[:, idx].mean()) for idx, name in enumerate(FEATURE_NAMES)
-}
+model = load_model()
 
-@app.route("/", methods=["GET", "POST"])
-def index():
-    prediction = None
-    probability = None
-    values = feature_defaults.copy()
+def predict(values):
+    values_array = np.array([values[label] for label in FEATURE_LABELS]).reshape(1, -1)
+    prediction_class = model.predict(values_array)[0]
+    probability = float(model.predict_proba(values_array)[0].max())
+    return prediction_class, probability
 
-    if request.method == "POST":
-        try:
-            values = {
-                name: float(request.form.get(name, feature_defaults[name]))
-                for name in FEATURE_NAMES
-            }
-            input_vector = [[values[name] for name in FEATURE_NAMES]]
-            prediction_class = model.predict(input_vector)[0]
-            probability = float(model.predict_proba(input_vector)[0].max())
-            prediction = "Cancer" if prediction_class == 0 else "Non-cancer"
-        except ValueError:
-            prediction = "Invalid input. Please enter numeric values for all fields."
+st.set_page_config(page_title="Breast Cancer Predictor", page_icon="🩺", layout="centered")
+st.title("Breast Cancer Prediction")
+st.markdown(
+    "Enter six tumor measurements below. The model is loaded from `model.pkl` and predicts whether the sample is cancer or non-cancer."
+)
 
-    return render_template(
-        "index.html",
-        feature_names=FEATURE_NAMES,
-        values=values,
-        prediction=prediction,
-        probability=probability,
+defaults = get_defaults()
+cols = st.columns(2)
+user_values = {}
+for idx, label in enumerate(FEATURE_LABELS):
+    column = cols[idx % 2]
+    user_values[label] = column.number_input(
+        label=label,
+        value=defaults[label],
+        format="%.4f",
+        step=0.1,
     )
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(__import__("os").environ.get("PORT", 5000)))
+if st.button("Predict"):
+    prediction_class, probability = predict(user_values)
+    label = "Cancer" if prediction_class == 0 else "Non-cancer"
+    st.success(f"Prediction: {label}")
+    st.write(f"Confidence: {probability * 100:.1f}%")
+
+    if prediction_class == 0:
+        st.warning(
+            "The model predicts a cancer diagnosis. This is a data-driven prediction and not a medical diagnosis."
+        )
+    else:
+        st.info("The model predicts a non-cancer diagnosis.")

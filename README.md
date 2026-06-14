@@ -1,21 +1,32 @@
 # Logistic Regression Cancer Prediction
 
-A Flask-based demo app that predicts breast cancer risk using a trained logistic regression model.
+A Streamlit app that predicts breast cancer versus non-cancer using a logistic regression model loaded from pickle.
 
 ## Run locally
 
 1. Create a Python virtual environment.
-2. Install dependencies: `pip install -r requirements.txt`
-3. Start the app: `python app.py`
-4. Open `http://localhost:5000`
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Train the model and create the pickle file:
+   ```bash
+   python train_model.py
+   ```
+4. Run the Streamlit app:
+   ```bash
+   streamlit run app.py
+   ```
+5. Open the URL shown in the terminal.
 
 ## Deploy on Render
 
-This repository includes a `requirements.txt` and `Procfile` so Render can detect and deploy the app automatically.
+This repository includes a `requirements.txt` and `Procfile` so Render can detect and deploy the app.
 
 ## Features
 
-- Uses scikit-learn's breast cancer dataset
-- Trains a logistic regression model on 6 selected features
-- Displays a clean form UI to submit measurements
-- Predicts cancer vs. non-cancer with confidence score
+- Trains a logistic regression model on the breast cancer dataset
+- Saves the model to `model.pkl`
+- Loads the pickled model in Streamlit for prediction
+- Provides a clean form UI to enter tumor measurements
+- Predicts cancer or non-cancer with a confidence score
