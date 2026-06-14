@@ -23,6 +23,16 @@ A Streamlit app that predicts cancer versus normal using a logistic regression m
 
 This repository includes a `requirements.txt` and `Procfile` so Render can detect and deploy the app.
 
+## Deploy on Streamlit Community Cloud
+
+1. Visit `https://share.streamlit.io` and sign in with GitHub.
+2. Click **New app**.
+3. Select the repository: `ramesitexp/logistic_regression_cancer_predction`.
+4. Choose branch `main` and file `app.py`.
+5. Click **Deploy**.
+
+The app uses `requirements.txt` and `model.pkl` from the repository, so no extra setup is required.
+
 ## Features
 
 - Trains a logistic regression model on the breast cancer dataset
