@@ -5,6 +5,8 @@ import numpy as np
 import streamlit as st
 from sklearn.datasets import load_breast_cancer
 
+st.set_page_config(page_title="Breast Cancer Predictor", page_icon="🩺", layout="centered")
+
 MODEL_PATH = Path(__file__).parent / "model.pkl"
 FEATURE_LABELS = [
     "Mean Radius",
