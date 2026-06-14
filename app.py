@@ -44,7 +44,6 @@ def predict(values):
     probability = float(model.predict_proba(values_array)[0].max())
     return prediction_class, probability
 
-st.set_page_config(page_title="Breast Cancer Predictor", page_icon="🩺", layout="centered")
 st.title("Breast Cancer Prediction")
 st.markdown(
     "Enter six tumor measurements below. The model is loaded from `model.pkl` and predicts whether the sample is cancer or non-cancer."
