@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cancer Prediction</title>
+    <style>
+      body { font-family: Inter, system-ui, sans-serif; margin: 0; padding: 0; background: #f7fafc; color: #1f2937; }
+      .page { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+      .card { width: 100%; max-width: 780px; background: white; border-radius: 24px; box-shadow: 0 24px 70px rgba(15, 23, 42, 0.08); padding: 2.5rem; }
+      h1 { margin: 0 0 0.5rem; font-size: 2rem; }
+      p.lead { margin: 0 0 1.75rem; color: #4b5563; line-height: 1.75; }
+      .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+      label { display: block; font-size: 0.95rem; margin-bottom: 0.5rem; color: #374151; }
+      input { width: 100%; border: 1px solid #d1d5db; border-radius: 14px; padding: 0.9rem 1rem; font-size: 1rem; color: #111827; }
+      button { margin-top: 1.5rem; width: 100%; background: #2563eb; border: none; color: white; padding: 1rem 1.25rem; border-radius: 14px; font-size: 1rem; cursor: pointer; transition: background 0.2s ease; }
+      button:hover { background: #1d4ed8; }
+      .result { margin-top: 1.75rem; padding: 1.5rem; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 18px; }
+      .result strong { color: #1d4ed8; }
+      .small { color: #6b7280; margin-top: 0.5rem; }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="card">
+        <h1>Cancer Risk Predictor</h1>
+        <p class="lead">Enter the six breast-cancer-related measurements below. The model will predict whether the sample is likely cancerous or non-cancerous.</p>
+        <form method="post" novalidate>
+          <div class="grid">
+            {% for name in feature_names %}
+            <div>
+              <label for="{{ name }}">{{ name.replace('_', ' ').title() }}</label>
+              <input
+                id="{{ name }}"
+                name="{{ name }}"
+                type="number"
+                step="any"
+                value="{{ values[name] }}"
+                required
+              />
+            </div>
+            {% endfor %}
+          </div>
+          <button type="submit">Predict Cancer Risk</button>
+        </form>
+
+        {% if prediction is not none %}
+        <div class="result">
+          <p><strong>Prediction:</strong> {{ prediction }}</p>
+          {% if probability is not none %}
+          <p class="small">Confidence: {{ '%.1f'|format(probability * 100) }}%</p>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </body>
+</html>
