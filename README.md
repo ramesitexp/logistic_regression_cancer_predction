@@ -1,6 +1,6 @@
 # Logistic Regression Cancer Prediction
 
-A Streamlit app that predicts breast cancer versus non-cancer using a logistic regression model loaded from pickle.
+A Streamlit app that predicts cancer versus normal using a logistic regression model loaded from pickle.
 
 ## Run locally
 

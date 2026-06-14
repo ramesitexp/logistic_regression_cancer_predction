@@ -44,7 +44,7 @@ def predict(values):
     probability = float(model.predict_proba(values_array)[0].max())
     return prediction_class, probability
 
-st.title("Breast Cancer Prediction")
+st.title("Cancer Prediction")
 st.markdown(
     "Enter six tumor measurements below. The model is loaded from `model.pkl` and predicts whether the sample is cancer or normal."
 )
