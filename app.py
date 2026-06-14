@@ -9,12 +9,12 @@ st.set_page_config(page_title="Breast Cancer Predictor", page_icon="🩺", layou
 
 MODEL_PATH = Path(__file__).parent / "model.pkl"
 FEATURE_LABELS = [
-    "Mean Radius",
-    "Mean Texture",
-    "Mean Perimeter",
-    "Mean Area",
-    "Mean Smoothness",
-    "Mean Concavity",
+    "Average radius",
+    "Texture variation",
+    "Perimeter length",
+    "Tumor area",
+    "Border smoothness",
+    "Concavity depth",
 ]
 FEATURE_NAMES = [
     "mean radius",
@@ -24,6 +24,14 @@ FEATURE_NAMES = [
     "mean smoothness",
     "mean concavity",
 ]
+FEATURE_HELP = {
+    "Average radius": "The average size of the tumor measured from center to edge.",
+    "Texture variation": "How irregular the tumor's interior texture appears.",
+    "Perimeter length": "The average outline length of the tumor shape.",
+    "Tumor area": "The average cross-sectional area of the tumor.",
+    "Border smoothness": "How smooth or jagged the tumor border is.",
+    "Concavity depth": "The average depth of any inward curves on the tumor border.",
+}
 
 @st.cache_resource
 def load_model():
@@ -46,7 +54,8 @@ def predict(values):
 
 st.title("Cancer Prediction")
 st.markdown(
-    "Enter six tumor measurements below. The model is loaded from `model.pkl` and predicts whether the sample is cancer or normal."
+    "Enter six tumor measurements below. Each field uses a friendly label and a quick explanation so the attributes are easy to understand. "
+    "The model is loaded from `model.pkl` and predicts whether the sample is cancer or normal."
 )
 
 defaults = get_defaults()
@@ -59,6 +68,7 @@ for idx, label in enumerate(FEATURE_LABELS):
         value=defaults[label],
         format="%.4f",
         step=0.1,
+        help=FEATURE_HELP.get(label, ""),
     )
 
 if st.button("Predict"):

@@ -28,5 +28,5 @@ This repository includes a `requirements.txt` and `Procfile` so Render can detec
 - Trains a logistic regression model on the breast cancer dataset
 - Saves the model to `model.pkl`
 - Loads the pickled model in Streamlit for prediction
-- Provides a clean form UI to enter tumor measurements
-- Predicts cancer or non-cancer with a confidence score
+- Provides a clean form UI with human-readable tumor measurement labels
+- Predicts cancer or normal with a confidence score
