@@ -46,7 +46,7 @@ def predict(values):
 
 st.title("Breast Cancer Prediction")
 st.markdown(
-    "Enter six tumor measurements below. The model is loaded from `model.pkl` and predicts whether the sample is cancer or non-cancer."
+    "Enter six tumor measurements below. The model is loaded from `model.pkl` and predicts whether the sample is cancer or normal."
 )
 
 defaults = get_defaults()
@@ -63,7 +63,7 @@ for idx, label in enumerate(FEATURE_LABELS):
 
 if st.button("Predict"):
     prediction_class, probability = predict(user_values)
-    label = "Cancer" if prediction_class == 0 else "Non-cancer"
+    label = "Cancer" if prediction_class == 0 else "Normal"
     st.success(f"Prediction: {label}")
     st.write(f"Confidence: {probability * 100:.1f}%")
 
@@ -72,4 +72,4 @@ if st.button("Predict"):
             "The model predicts a cancer diagnosis. This is a data-driven prediction and not a medical diagnosis."
         )
     else:
-        st.info("The model predicts a non-cancer diagnosis.")
+        st.info("The model predicts a normal diagnosis.")
